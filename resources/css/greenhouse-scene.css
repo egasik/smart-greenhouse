@@ -1,0 +1,65 @@
+.scene-container {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: #07100f;
+}
+
+.scene-container::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background:
+        linear-gradient(90deg, rgba(7, 8, 13, .30), transparent 44%),
+        radial-gradient(circle at 58% 48%, transparent 28%, rgba(7, 8, 13, .26) 100%);
+}
+
+.scene-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+}
+
+.scene-container canvas:active {
+    cursor: grabbing;
+}
+
+.scene-container[aria-busy='true']::after {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: .55rem;
+    height: .55rem;
+    border: 1px solid rgba(205, 255, 223, .25);
+    border-top-color: #70d99c;
+    border-radius: 999px;
+    content: '';
+    transform: translate(-50%, -50%);
+    animation: scene-loader .75s linear infinite;
+}
+
+.scene-error {
+    display: grid;
+    min-height: 100%;
+    margin: 0;
+    padding: 1.5rem;
+    place-items: center;
+    color: #b7c2bd;
+    font-size: .875rem;
+    text-align: center;
+}
+
+@keyframes scene-loader {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scene-container[aria-busy='true']::after {
+        animation: none;
+    }
+}

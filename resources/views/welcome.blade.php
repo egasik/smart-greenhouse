@@ -3,382 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Умная теплица — контроль выращивания растений</title>
-    <meta name="description"
-          content="Умная теплица помогает учитывать культуры, отслеживать показатели среды и планировать уход за растениями.">
-
+    <meta name="description" content="Умная теплица помогает учитывать культуры, контролировать показатели среды и планировать уход за растениями.">
+    <title>Умная теплица</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <style>
-        .scene-container {
-            background:
-                radial-gradient(circle at 50% 50%, rgba(76, 195, 138, .12), transparent 62%);
-        }
-
-        .scene-container canvas {
-            display: block;
-            height: 100%;
-            width: 100%;
-        }
-
-        .scene-caption {
-            border: 1px solid rgba(255, 255, 255, .12);
-            background: rgba(17, 20, 28, .74);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, .12),
-                0 18px 50px rgba(0, 0, 0, .28);
+        html { scroll-behavior: smooth; }
+        body { background: #07080d; color: #eef0f5; }
+        .page-shell { background: #07080d; }
+        .nav-surface {
+            border: 1px solid rgba(255, 255, 255, .09);
+            background: rgba(12, 15, 20, .76);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .22);
             backdrop-filter: blur(16px);
         }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 700ms cubic-bezier(.22, 1, .36, 1),
-                        transform 700ms cubic-bezier(.22, 1, .36, 1);
+        .button-primary {
+            border: 1px solid rgba(163, 255, 198, .20);
+            background: rgba(76, 195, 138, .94);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .26), 0 10px 28px rgba(41, 151, 92, .18);
+            color: #07100c;
+            transition: transform 300ms cubic-bezier(.22,1,.36,1), background-color 300ms cubic-bezier(.22,1,.36,1);
         }
-
-        .reveal.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .tagline-word {
-            color: rgba(238, 240, 245, .3);
-            transition: color 500ms cubic-bezier(.22, 1, .36, 1);
-        }
-
-        .tagline-word.is-active {
+        .button-primary:hover { background: #63d99a; transform: translateY(-2px); }
+        .button-primary:active { transform: scale(.98); }
+        .button-quiet {
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .045);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
             color: #eef0f5;
+            transition: transform 300ms cubic-bezier(.22,1,.36,1), background-color 300ms cubic-bezier(.22,1,.36,1);
+        }
+        .button-quiet:hover { background: rgba(255, 255, 255, .10); transform: translateY(-2px); }
+        .button-quiet:active { transform: scale(.98); }
+        .signal-card {
+            border: 1px solid rgba(255, 255, 255, .09);
+            background: #11141a;
+        }
+        .section-line { border-color: rgba(255, 255, 255, .09); }
+        .muted { color: #a3a9b8; }
+        .hero-copy { text-wrap: pretty; }
+        .hero-title { text-wrap: balance; }
+        .metric-grid line { stroke: rgba(255, 255, 255, .10); stroke-width: 1; }
+        .metric-line { fill: none; stroke: #4cc38a; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; }
+        .metric-area { fill: rgba(76, 195, 138, .10); }
+        .feature-icon { border: 1px solid rgba(76, 195, 138, .22); background: rgba(76, 195, 138, .08); color: #70d99c; }
+        :focus-visible { outline: 2px solid #70d99c; outline-offset: 4px; }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
         }
     </style>
 </head>
-
-<body class="bg-[#07080d] text-[#eef0f5] antialiased">
-    <a href="#content"
-       class="absolute left-4 top-4 z-50 -translate-y-20 rounded-lg bg-[#4cc38a] px-4 py-2 text-sm font-medium text-[#07080d] transition-transform focus:translate-y-0">
+<body class="antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:rounded-lg focus:bg-[#4cc38a] focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#07100c]">
         Перейти к содержимому
     </a>
 
-    <header class="absolute inset-x-0 top-0 z-30">
-        <nav class="mx-auto flex max-w-7xl items-center justify-between px-8 py-6">
-            <a href="{{ url('/') }}" class="flex items-center gap-3 text-lg font-semibold">
-                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#4cc38a] text-[#07080d]">
-                    G
-                </span>
-                Умная теплица
-            </a>
-
-            <div class="flex items-center gap-6 text-sm text-[#a3a9b8]">
-                <a href="#features" class="transition-colors duration-300 hover:text-[#eef0f5]">
-                    Возможности
-                </a>
-                <a href="#process" class="transition-colors duration-300 hover:text-[#eef0f5]">
-                    Как работает
-                </a>
-                <a href="#faq" class="transition-colors duration-300 hover:text-[#eef0f5]">
-                    Вопросы
+    <div class="page-shell min-h-screen overflow-x-hidden">
+        <header class="fixed inset-x-0 top-0 z-40 px-4 pt-4 sm:px-6">
+            <nav class="nav-surface mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-4 py-3 sm:px-5" aria-label="Основная навигация">
+                <a href="{{ url('/') }}" class="flex items-center gap-3 text-base font-semibold text-white">
+                    <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#4cc38a] text-sm font-bold text-[#07100c]">G</span>
+                    Умная теплица
                 </a>
 
-                @auth
-                    <a href="{{ route('dashboard') }}"
-                       class="rounded-lg bg-[#4cc38a] px-4 py-2 font-medium text-[#07080d] transition-colors duration-300 hover:bg-[#67d89e] active:scale-[.98]">
-                        Открыть кабинет
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="transition-colors duration-300 hover:text-[#eef0f5]">
-                        Войти
-                    </a>
-
-                    <a href="{{ route('register') }}"
-                       class="rounded-lg bg-[#4cc38a] px-4 py-2 font-medium text-[#07080d] transition-colors duration-300 hover:bg-[#67d89e] active:scale-[.98]">
-                        Создать аккаунт
-                    </a>
-                @endauth
-            </div>
-        </nav>
-    </header>
-
-    <main id="content">
-        <section class="relative flex min-h-screen items-center overflow-hidden bg-[#07080d]">
-    <div id="greenhouse-scene"
-         class="scene-container absolute inset-y-0 right-0 w-3/5">
-    </div>
-
-    <div class="absolute inset-0 bg-[#07080d]/35"></div>
-
-    <div class="relative z-10 mx-auto w-full max-w-7xl px-8 pt-32">
-        <div class="max-w-2xl">
-            <p class="mb-6 text-sm text-[#a3a9b8]">
-                Контроль среды и ухода за растениями
-            </p>
-
-            <h1 class="bg-gradient-to-r from-white to-[#9b9b9b] bg-clip-text text-6xl font-semibold leading-none text-transparent">
-                Выращивайте растения<br>
-                с точными данными
-            </h1>
-
-            <p class="mt-8 max-w-xl text-lg leading-7 text-[#c0c6d1]">
-                Создавайте теплицы, отслеживайте показатели среды,
-                фиксируйте рост растений и планируйте уход.
-            </p>
-
-            <div class="mt-8 flex items-center gap-4">
-                @auth
-                    <a href="{{ route('dashboard') }}"
-                       class="glass-button glass-button-accent rounded-lg px-5 py-3 text-base font-semibold">
-                        Перейти к теплицам
-                    </a>
-                @else
-                    <a href="{{ route('register') }}"
-                       class="glass-button glass-button-accent rounded-lg px-5 py-3 text-base font-semibold">
-                        Начать вести теплицу
-                    </a>
-                @endauth
-
-                <a href="#signals"
-                   class="glass-button rounded-lg px-5 py-3 text-base font-medium text-[#eef0f5]">
-                    Посмотреть показатели
-                </a>
-            </div>
-        </div>
-
-        <div class="scene-caption mt-16 max-w-3xl rounded-2xl p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-[#a3a9b8]">Интерактивная модель</p>
-                    <p class="mt-1 text-xl font-medium">Наведите курсор на теплицу</p>
+                <div class="hidden items-center gap-6 text-sm text-[#a3a9b8] lg:flex">
+                    <a href="#signals" class="transition-colors duration-300 hover:text-white">Показатели</a>
+                    <a href="#features" class="transition-colors duration-300 hover:text-white">Возможности</a>
+                    <a href="#workflow" class="transition-colors duration-300 hover:text-white">Как это работает</a>
+                    <a href="#questions" class="transition-colors duration-300 hover:text-white">Вопросы</a>
                 </div>
 
-                <p class="text-sm text-[#4cc38a]">
-                    Датчики и растения в 3D
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-        <section class="reveal mx-auto max-w-7xl px-8 py-28">
-            <div class="max-w-4xl">
-                <p class="text-4xl font-semibold leading-tight text-[#eef0f5]">
-                    <span class="tagline-word">Каждое</span>
-                    <span class="tagline-word">измерение</span>
-                    <span class="tagline-word">помогает</span>
-                    <span class="tagline-word">вовремя</span>
-                    <span class="tagline-word">заметить</span>
-                    <span class="tagline-word">изменения.</span><br>
-                    <span class="tagline-word">Каждая</span>
-                    <span class="tagline-word">задача</span>
-                    <span class="tagline-word">помогает</span>
-                    <span class="tagline-word">не</span>
-                    <span class="tagline-word">пропустить</span>
-                    <span class="tagline-word">уход.</span>
-                </p>
-            </div>
-        </section>
-
-        <section id="features" class="bg-[#11141c] py-28">
-            <div class="mx-auto max-w-7xl px-8">
-                <p class="text-sm text-[#4cc38a]">Возможности системы</p>
-                <h2 class="mt-4 max-w-2xl text-5xl font-semibold leading-none">
-                    Все данные о выращивании в одном месте
-                </h2>
-
-                <div class="mt-16 grid grid-cols-3 gap-6">
-                    <article class="reveal rounded-2xl border border-white/10 bg-[#1a1e28] p-7">
-                        <p class="text-sm text-[#4cc38a]">01</p>
-                        <h3 class="mt-8 text-2xl font-medium">Теплицы и посадки</h3>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Создавайте теплицы, добавляйте культуры и фиксируйте дату каждой посадки.
-                        </p>
-                    </article>
-
-                    <article class="reveal rounded-2xl border border-white/10 bg-[#1a1e28] p-7">
-                        <p class="text-sm text-[#4cc38a]">02</p>
-                        <h3 class="mt-8 text-2xl font-medium">Показатели среды</h3>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Сохраняйте температуру и освещённость для всей теплицы или отдельной посадки.
-                        </p>
-                    </article>
-
-                    <article class="reveal rounded-2xl border border-white/10 bg-[#1a1e28] p-7">
-                        <p class="text-sm text-[#4cc38a]">03</p>
-                        <h3 class="mt-8 text-2xl font-medium">Уход без пропусков</h3>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Планируйте полив, подкормку, проветривание и отмечайте выполненные процедуры.
-                        </p>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <section id="process" class="mx-auto max-w-7xl px-8 py-28">
-            <p class="text-sm text-[#4cc38a]">Как начать</p>
-            <h2 class="mt-4 text-5xl font-semibold leading-none">
-                Три шага до порядка в теплице
-            </h2>
-
-            <div class="mt-16 grid grid-cols-3 gap-12">
-                <div class="reveal">
-                    <p class="text-sm text-[#a3a9b8]">Шаг 1</p>
-                    <p class="mt-4 text-2xl font-medium">Создайте теплицу</p>
-                    <p class="mt-3 leading-6 text-[#a3a9b8]">
-                        Укажите название и расположение, чтобы разделять данные разных теплиц.
-                    </p>
-                </div>
-
-                <div class="reveal">
-                    <p class="text-sm text-[#a3a9b8]">Шаг 2</p>
-                    <p class="mt-4 text-2xl font-medium">Добавьте посадки</p>
-                    <p class="mt-3 leading-6 text-[#a3a9b8]">
-                        Выберите культуру, дату и количество растений.
-                    </p>
-                </div>
-
-                <div class="reveal">
-                    <p class="text-sm text-[#a3a9b8]">Шаг 3</p>
-                    <p class="mt-4 text-2xl font-medium">Ведите наблюдения</p>
-                    <p class="mt-3 leading-6 text-[#a3a9b8]">
-                        Записывайте показатели и выполняйте запланированные процедуры ухода.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq" class="bg-[#11141c] py-28">
-            <div class="mx-auto max-w-4xl px-8">
-                <p class="text-sm text-[#4cc38a]">Частые вопросы</p>
-                <h2 class="mt-4 text-5xl font-semibold leading-none">
-                    О системе
-                </h2>
-
-                <div class="mt-12 space-y-4">
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Можно ли вести несколько теплиц
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Да. Для каждой теплицы хранятся отдельные посадки, показатели и задачи по уходу.
-                        </p>
-                    </details>
-
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Какие показатели можно записывать
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            В текущей версии доступны температура и освещённость.
-                        </p>
-                    </details>
-
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Можно ли планировать полив
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Да. Полив выбирается как тип процедуры, после выполнения задачу можно отметить завершённой.
-                        </p>
-                    </details>
-
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Можно ли добавлять свои культуры
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Да. В справочнике можно указать название культуры, сорт и описание.
-                        </p>
-                    </details>
-
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Будет ли доступна интеграция с погодой
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Да. В дальнейшем систему можно подключить к бесплатному погодному API при наличии доступа в интернет.
-                        </p>
-                    </details>
-
-                    <details class="rounded-xl border border-white/10 bg-[#1a1e28] p-5">
-                        <summary class="cursor-pointer text-lg font-medium">
-                            Где хранятся данные
-                        </summary>
-                        <p class="mt-4 leading-6 text-[#a3a9b8]">
-                            Данные сохраняются в локальной базе MySQL проекта Laravel.
-                        </p>
-                    </details>
-                </div>
-            </div>
-        </section>
-
-        <section class="mx-auto max-w-7xl px-8 py-28">
-            <div class="rounded-2xl bg-[#4cc38a] p-12 text-[#07080d]">
-                <p class="text-sm font-medium">Начало работы</p>
-                <h2 class="mt-4 max-w-2xl text-5xl font-semibold leading-none">
-                    Создайте первую теплицу и начните вести наблюдения
-                </h2>
-
-                <div class="mt-8">
+                <div class="flex items-center gap-3">
                     @auth
-                        <a href="{{ route('dashboard') }}"
-                           class="inline-flex rounded-lg bg-[#07080d] px-5 py-3 font-semibold text-[#eef0f5] transition-colors duration-300 hover:bg-[#1a1e28] active:scale-[.98]">
-                            Открыть кабинет
-                        </a>
+                        <a href="{{ route('dashboard') }}" class="button-primary rounded-lg px-3 py-2 text-sm font-semibold">Открыть кабинет</a>
                     @else
-                        <a href="{{ route('register') }}"
-                           class="inline-flex rounded-lg bg-[#07080d] px-5 py-3 font-semibold text-[#eef0f5] transition-colors duration-300 hover:bg-[#1a1e28] active:scale-[.98]">
-                            Создать аккаунт
-                        </a>
+                        @if (Route::has('login'))
+                            <a href="{{ route('login') }}" class="hidden text-sm text-[#c0c6d1] transition-colors duration-300 hover:text-white sm:block">Войти</a>
+                        @endif
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="button-primary rounded-lg px-3 py-2 text-sm font-semibold">Создать аккаунт</a>
+                        @endif
                     @endauth
                 </div>
+            </nav>
+        </header>
+
+        <main id="main">
+            <section class="relative flex min-h-screen items-center overflow-hidden border-b section-line bg-[#07080d]">
+                <div id="greenhouse-scene" class="scene-container absolute inset-y-0 right-0 z-0 w-full lg:w-3/5" aria-label="Интерактивная трёхмерная модель умной теплицы"></div>
+                <div class="pointer-events-none absolute inset-0 z-[1] bg-[#07080d]/20"></div>
+
+                <div class="relative z-10 mx-auto w-full max-w-6xl px-6 pb-14 pt-32 sm:px-8 lg:px-10">
+                    <div class="max-w-2xl">
+                        <p class="mb-6 text-sm font-medium text-[#a3a9b8]">Контроль среды и ухода за растениями</p>
+                        <h1 class="hero-title max-w-[680px] text-5xl font-semibold leading-none text-white sm:text-6xl">
+                            Выращивайте растения<br>с точными данными
+                        </h1>
+                        <p class="hero-copy mt-8 max-w-xl text-lg leading-7 text-[#c0c6d1]">
+                            Создавайте теплицы, учитывайте культуры, фиксируйте рост и планируйте полив, подкормку и другие процедуры ухода.
+                        </p>
+
+                        <div class="mt-8 flex flex-wrap items-center gap-3">
+                            @auth
+                                <a href="{{ route('dashboard') }}" class="button-primary rounded-lg px-4 py-3 text-base font-semibold">Перейти к теплицам</a>
+                            @else
+                                @if (Route::has('register'))
+                                    <a href="{{ route('register') }}" class="button-primary rounded-lg px-4 py-3 text-base font-semibold">Начать вести теплицу</a>
+                                @endif
+                            @endauth
+                            <a href="#signals" class="button-quiet rounded-lg px-4 py-3 text-base font-semibold">Посмотреть показатели</a>
+                        </div>
+                    </div>
+
+                    <div class="nav-surface mt-16 flex max-w-2xl items-center justify-between gap-6 rounded-2xl p-5 sm:p-6">
+                        <div>
+                            <p class="text-sm text-[#a3a9b8]">Интерактивная модель</p>
+                            <p class="mt-1 text-lg font-medium text-white">Потяните сцену, чтобы осмотреть теплицу</p>
+                        </div>
+                        <span class="hidden text-sm font-medium text-[#70d99c] sm:block">3D растения и датчик</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="signals" class="border-b section-line bg-[#0b0e13] py-20 sm:py-24">
+                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
+                    <div class="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+                        <div>
+                            <p class="text-sm font-medium text-[#70d99c]">Показатели среды</p>
+                            <h2 class="mt-4 max-w-xl text-4xl font-semibold leading-tight text-white">Видите состояние теплицы в одном окне</h2>
+                            <p class="mt-5 max-w-lg text-base leading-7 text-[#a3a9b8]">В журнале измерений сохраняются температура, влажность и освещённость. По ним легче заметить отклонение и не пропустить уход.</p>
+                        </div>
+                        <div class="signal-card rounded-2xl p-5 sm:p-6">
+                            <div class="flex flex-wrap items-start justify-between gap-4">
+                                <div>
+                                    <p class="text-sm text-[#a3a9b8]">Температура за сегодня</p>
+                                    <p class="mt-2 text-4xl font-semibold tabular-nums text-white">24,6 °C</p>
+                                </div>
+                                <span class="rounded-full border border-[#4cc38a]/25 bg-[#4cc38a]/10 px-3 py-1 text-sm font-medium text-[#70d99c]">В норме</span>
+                            </div>
+                            <svg class="metric-grid mt-8 h-48 w-full" viewBox="0 0 620 220" role="img" aria-label="График температуры за день">
+                                <line x1="0" y1="30" x2="620" y2="30"></line>
+                                <line x1="0" y1="85" x2="620" y2="85"></line>
+                                <line x1="0" y1="140" x2="620" y2="140"></line>
+                                <line x1="0" y1="195" x2="620" y2="195"></line>
+                                <path class="metric-area" d="M0 166 C55 151 78 127 125 137 S191 84 248 103 S318 140 374 96 S465 44 526 73 S582 90 620 55 L620 220 L0 220 Z"></path>
+                                <path class="metric-line" d="M0 166 C55 151 78 127 125 137 S191 84 248 103 S318 140 374 96 S465 44 526 73 S582 90 620 55"></path>
+                                <circle cx="620" cy="55" r="5" fill="#70d99c"></circle>
+                            </svg>
+                            <div class="mt-3 flex justify-between text-xs text-[#707786]"><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="features" class="border-b section-line bg-[#07080d] py-20 sm:py-24">
+                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
+                    <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+                        <div id="plants-scene" class="scene-container h-[420px] w-full rounded-2xl sm:h-[520px]" aria-label="Трёхмерная модель выращиваемых культур"></div>
+                        <div>
+                            <p class="text-sm font-medium text-[#70d99c]">Культуры и уход</p>
+                            <h2 class="mt-4 text-4xl font-semibold leading-tight text-white">Ведите растения от посадки до сбора урожая</h2>
+                            <div class="mt-8 space-y-5">
+                                <article class="flex gap-4">
+                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">01</span>
+                                    <div><h3 class="text-lg font-medium text-white">Карточки культур</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Сохраняйте сорт, описание и особенности выращивания.</p></div>
+                                </article>
+                                <article class="flex gap-4">
+                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">02</span>
+                                    <div><h3 class="text-lg font-medium text-white">Этапы роста</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Отмечайте посадку, всходы, цветение и плодоношение.</p></div>
+                                </article>
+                                <article class="flex gap-4">
+                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">03</span>
+                                    <div><h3 class="text-lg font-medium text-white">План процедур</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Создавайте задачи на полив, подкормку, пересадку и осмотр.</p></div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="border-b section-line bg-[#0b0e13] py-24 sm:py-32">
+                <div class="mx-auto max-w-4xl px-6 text-center sm:px-8">
+                    <p class="text-4xl font-semibold leading-tight text-[#717886] sm:text-5xl">
+                        Меньше записей в блокноте.<br><span class="text-white">Больше понятных действий для каждой культуры.</span>
+                    </p>
+                </div>
+            </section>
+
+            <section id="workflow" class="border-b section-line bg-[#07080d] py-20 sm:py-24">
+                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
+                    <p class="text-sm font-medium text-[#70d99c]">Как это работает</p>
+                    <h2 class="mt-4 max-w-2xl text-4xl font-semibold leading-tight text-white">Три шага для контроля выращивания</h2>
+                    <div class="mt-12 grid gap-5 md:grid-cols-3">
+                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 1</p><h3 class="mt-5 text-xl font-medium text-white">Добавьте теплицу и культуры</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Создайте пространство, грядки и карточки растений.</p></article>
+                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 2</p><h3 class="mt-5 text-xl font-medium text-white">Записывайте показатели</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Вносите измерения температуры и освещения в удобный журнал.</p></article>
+                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 3</p><h3 class="mt-5 text-xl font-medium text-white">Выполняйте процедуры вовремя</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Отмечайте завершённые задачи и следите за этапами развития.</p></article>
+                    </div>
+                </div>
+            </section>
+
+            <section id="questions" class="border-b section-line bg-[#0b0e13] py-20 sm:py-24">
+                <div class="mx-auto max-w-3xl px-6 sm:px-8">
+                    <p class="text-sm font-medium text-[#70d99c]">Вопросы</p>
+                    <h2 class="mt-4 text-4xl font-semibold leading-tight text-white">Частые вопросы</h2>
+                    <div class="mt-10 space-y-3">
+                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Можно ли вести несколько теплиц?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Да. Для каждой теплицы можно учитывать отдельные культуры, посадки, показатели и процедуры.</p></details>
+                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Какие данные можно фиксировать?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Температуру, освещённость и другие показатели, необходимые для наблюдения за условиями выращивания.</p></details>
+                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Подходит ли система для учёбы?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Да. Проект работает локально и подходит для ведения учебного примера теплицы с несколькими культурами.</p></details>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-[#07080d] py-20 sm:py-24">
+                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
+                    <div class="signal-card flex flex-col items-start justify-between gap-8 rounded-2xl p-8 sm:flex-row sm:items-center sm:p-10">
+                        <div><h2 class="text-3xl font-semibold text-white">Начните вести свою теплицу</h2><p class="mt-3 max-w-xl text-base leading-7 text-[#a3a9b8]">Создайте первую теплицу и добавьте выращиваемые культуры.</p></div>
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="button-primary shrink-0 rounded-lg px-4 py-3 text-base font-semibold">Открыть кабинет</a>
+                        @elseif (Route::has('register'))
+                            <a href="{{ route('register') }}" class="button-primary shrink-0 rounded-lg px-4 py-3 text-base font-semibold">Создать аккаунт</a>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t section-line bg-[#07080d] py-8">
+            <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 text-sm text-[#707786] sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+                <p>© {{ date('Y') }} Умная теплица</p>
+                <p>Учебный проект для контроля выращивания растений</p>
             </div>
-        </section>
-    </main>
-
-    <footer class="border-t border-white/10">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-8 py-8 text-sm text-[#a3a9b8]">
-            <p>Умная теплица</p>
-
-            <div class="flex gap-5">
-                <a href="#" class="hover:text-[#eef0f5]">Политика конфиденциальности</a>
-                <a href="#" class="hover:text-[#eef0f5]">Условия использования</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
-
-        document.querySelectorAll('.reveal').forEach((element) => {
-            observer.observe(element);
-        });
-
-        const taglineObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    const words = entry.target.querySelectorAll('.tagline-word');
-
-                    words.forEach((word, index) => {
-                        setTimeout(() => {
-                            word.classList.add('is-active');
-                        }, index * 90);
-                    });
-
-                    taglineObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.45 });
-
-        const tagline = document.querySelector('.tagline-word')?.closest('section');
-
-        if (tagline) {
-            taglineObserver.observe(tagline);
-        }
-    </script>
+        </footer>
+    </div>
 </body>
 </html>
