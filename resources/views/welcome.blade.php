@@ -3,237 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Умная теплица помогает учитывать культуры, контролировать показатели среды и планировать уход за растениями.">
+    <meta name="description" content="Умная теплица — учёт культур, контроль показателей и планирование ухода за растениями.">
     <title>Умная теплица</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css2?family=ibm-plex-serif:wght@400;500&family=inter:wght@400;500;600&display=swap" rel="stylesheet">
+    @vite(['resources/js/app.js'])
     <style>
-        html { scroll-behavior: smooth; }
-        body { background: #07080d; color: #eef0f5; }
-        .page-shell { background: #07080d; }
-        .nav-surface {
-            border: 1px solid rgba(255, 255, 255, .09);
-            background: rgba(12, 15, 20, .76);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, .22);
-            backdrop-filter: blur(16px);
-        }
-        .button-primary {
-            border: 1px solid rgba(163, 255, 198, .20);
-            background: rgba(76, 195, 138, .94);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .26), 0 10px 28px rgba(41, 151, 92, .18);
-            color: #07100c;
-            transition: transform 300ms cubic-bezier(.22,1,.36,1), background-color 300ms cubic-bezier(.22,1,.36,1);
-        }
-        .button-primary:hover { background: #63d99a; transform: translateY(-2px); }
-        .button-primary:active { transform: scale(.98); }
-        .button-quiet {
-            border: 1px solid rgba(255, 255, 255, .16);
-            background: rgba(255, 255, 255, .045);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
-            color: #eef0f5;
-            transition: transform 300ms cubic-bezier(.22,1,.36,1), background-color 300ms cubic-bezier(.22,1,.36,1);
-        }
-        .button-quiet:hover { background: rgba(255, 255, 255, .10); transform: translateY(-2px); }
-        .button-quiet:active { transform: scale(.98); }
-        .signal-card {
-            border: 1px solid rgba(255, 255, 255, .09);
-            background: #11141a;
-        }
-        .section-line { border-color: rgba(255, 255, 255, .09); }
-        .muted { color: #a3a9b8; }
-        .hero-copy { text-wrap: pretty; }
-        .hero-title { text-wrap: balance; }
-        .metric-grid line { stroke: rgba(255, 255, 255, .10); stroke-width: 1; }
-        .metric-line { fill: none; stroke: #4cc38a; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; }
-        .metric-area { fill: rgba(76, 195, 138, .10); }
-        .feature-icon { border: 1px solid rgba(76, 195, 138, .22); background: rgba(76, 195, 138, .08); color: #70d99c; }
-        :focus-visible { outline: 2px solid #70d99c; outline-offset: 4px; }
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
-        }
+        :root { --canvas:#101712; --paper:#f5f7f4; --mist:#a2ada5; --line:rgba(245,247,244,.12); --green:#6eae83; --green-light:#a0d8ad; --pine:#17251e; --moss:#1a2924; --soil:#251d1a; --console:#09100c; --mono:ui-monospace,SFMono-Regular,Consolas,monospace; }
+        * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; background:var(--canvas); color:var(--paper); font-family:Inter,system-ui,sans-serif; } a { color:inherit; text-decoration:none; } button { font:inherit; } .shell { overflow:hidden; } .wrap { width:min(100% - 32px,1160px); margin:auto; } .topbar { height:72px; display:flex; align-items:center; justify-content:space-between; gap:24px; } .brand { display:flex; align-items:center; gap:10px; font-size:15px; font-weight:600; white-space:nowrap; } .mark { width:30px; height:30px; display:grid; place-items:center; border:1px solid rgba(160,216,173,.42); border-radius:50%; color:var(--green-light); font-family:var(--mono); font-size:12px; } .nav { display:flex; align-items:center; gap:4px; } .nav a { padding:7px 10px; border-radius:6px; color:var(--mist); font-size:14px; transition:color .15s ease,background-color .15s ease; } .nav a:hover { color:var(--paper); background:rgba(255,255,255,.06); } .account { display:flex; align-items:center; gap:14px; color:var(--mist); font-size:14px; white-space:nowrap; } .account-link:hover { color:var(--paper); } .button { display:inline-flex; min-height:48px; align-items:center; justify-content:center; gap:9px; border:1px solid var(--line); border-radius:8px; padding:10px 18px; color:var(--paper); font-size:15px; font-weight:500; transition:background-color .15s ease,border-color .15s ease,transform .15s ease; } .button:hover { background:rgba(255,255,255,.07); } .button:active { transform:scale(.98); } .button--main { border-color:rgba(160,216,173,.34); background:#47795a; } .button--main:hover { background:#568c69; } .button--quiet { background:rgba(0,0,0,.22); } .hero { position:relative; min-height:calc(100svh - 16px); margin:0 16px 16px; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:linear-gradient(125deg,#1a2924 0%,#17251e 46%,#101712 100%); } .hero::before { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse 70% 54% at 20% 8%,rgba(110,174,131,.14),transparent 72%),linear-gradient(180deg,rgba(9,16,12,.06),rgba(9,16,12,.56)); } .hero-grid { position:relative; z-index:2; min-height:calc(100svh - 16px); display:grid; grid-template-columns:minmax(0,.88fr) minmax(450px,1.12fr); align-items:center; gap:28px; padding:120px max(32px,calc((100vw - 1160px)/2)) 68px; } .hero-copy { max-width:540px; } .eyebrow { display:inline-flex; align-items:center; gap:8px; margin:0 0 20px; color:var(--green-light); font-size:13px; font-weight:500; } .eyebrow::before { width:7px; height:7px; border:1px solid var(--green-light); border-radius:50%; content:''; } h1,h2 { margin:0; font-family:'IBM Plex Serif',Georgia,serif; font-weight:400; letter-spacing:-.04em; } h1 { max-width:560px; font-size:clamp(44px,5vw,64px); line-height:1.08; } .lead { max-width:500px; margin:24px 0 0; color:var(--mist); font-size:18px; line-height:1.62; } .hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; } .scene-wrap { position:relative; height:min(650px,67vh); min-height:460px; } #greenhouse-scene { position:absolute; inset:0; z-index:1; } #greenhouse-scene canvas,#plants-scene canvas { width:100%; height:100%; display:block; cursor:grab; } .scene-wrap::after { position:absolute; right:18px; bottom:12px; z-index:2; padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:rgba(9,16,12,.66); color:var(--mist); content:'потяните, чтобы осмотреть'; font-family:var(--mono); font-size:11px; pointer-events:none; } .hero-console { position:absolute; z-index:3; right:max(24px,calc((100vw - 1160px)/2)); bottom:32px; width:min(610px,calc(100% - 48px)); border:1px solid var(--line); border-radius:10px; background:rgba(9,16,12,.93); box-shadow:inset 0 1px 0 rgba(255,255,255,.06); } .console-top { display:flex; min-height:48px; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--line); color:var(--mist); font-size:12px; } .console-top span:first-child { color:var(--paper); } .console-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 3px rgba(110,174,131,.12); } .console-grid { display:grid; grid-template-columns:1.1fr .9fr .8fr; gap:1px; background:var(--line); } .console-cell { min-height:74px; padding:14px 16px; background:var(--console); } .console-label { color:#718078; font-family:var(--mono); font-size:10px; text-transform:uppercase; } .console-value { margin-top:9px; color:var(--paper); font-family:var(--mono); font-size:18px; font-variant-numeric:tabular-nums; } .console-value--green { color:var(--green-light); }
+        .chapter { position:relative; margin:0 16px 16px; border:1px solid var(--line); border-radius:16px; } .chapter--pine { background:var(--pine); } .chapter--moss { background:var(--moss); } .chapter--soil { background:var(--soil); } .chapter-inner { position:relative; width:min(100% - 64px,1160px); margin:auto; padding:96px 0; } .rail { position:absolute; top:0; bottom:0; left:0; width:1px; background:rgba(160,216,173,.4); } .rail::before { position:absolute; top:96px; left:-5px; width:9px; height:9px; border:2px solid var(--green-light); border-radius:50%; background:var(--pine); content:''; } .chapter-copy { max-width:660px; padding-left:40px; } .tag { display:inline-flex; margin-bottom:18px; border-radius:8px; padding:6px 10px; background:rgba(160,216,173,.10); color:var(--green-light); font-size:13px; font-weight:500; } .tag--warm { background:rgba(234,179,138,.11); color:#eab38a; } h2 { font-size:clamp(34px,4vw,46px); line-height:1.18; } .chapter-lead { margin:18px 0 0; color:var(--mist); font-size:18px; line-height:1.6; } .console { margin-top:48px; overflow:hidden; border:1px solid var(--line); border-radius:10px; background:var(--console); } .console-tabs { display:flex; gap:2px; overflow:auto; padding:8px; border-bottom:1px solid var(--line); } .console-tabs span { border-radius:6px; padding:7px 10px; color:var(--mist); font-size:13px; white-space:nowrap; } .console-tabs .active { background:rgba(110,174,131,.14); color:var(--green-light); } .metric-console { display:grid; grid-template-columns:1.1fr .9fr; min-height:280px; } .chart { position:relative; overflow:hidden; padding:24px; border-right:1px solid var(--line); background-image:radial-gradient(rgba(255,255,255,.14) 1px,transparent 1px); background-size:14px 14px; } .chart-head { display:flex; justify-content:space-between; gap:12px; color:var(--mist); font-size:13px; } .chart strong { color:var(--paper); font-family:var(--mono); font-size:24px; font-weight:400; } .chart svg { position:absolute; right:20px; bottom:24px; left:20px; width:calc(100% - 40px); height:150px; } .chart path:first-child { fill:rgba(110,174,131,.12); } .chart path:last-child { fill:none; stroke:var(--green-light); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; } .tasks { display:grid; align-content:center; gap:10px; padding:22px; } .task { display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--line); border-radius:8px; padding:12px; background:#121c16; } .task p { margin:0; color:var(--paper); font-size:13px; } .task small { display:block; margin-top:4px; color:var(--mist); font-size:11px; } .done { color:var(--green-light); font-family:var(--mono); font-size:11px; }
+        .plants-grid { display:grid; grid-template-columns:.92fr 1.08fr; align-items:center; gap:56px; margin-top:50px; } #plants-scene { min-height:390px; border:1px solid var(--line); border-radius:10px; background:rgba(9,16,12,.24); } .feature-list { display:grid; gap:0; } .feature { display:grid; grid-template-columns:36px 1fr; gap:16px; padding:20px 0; border-bottom:1px solid var(--line); } .feature-no { color:var(--green-light); font-family:var(--mono); font-size:12px; padding-top:4px; } .feature h3 { margin:0; color:var(--paper); font-size:16px; font-weight:600; } .feature p { margin:7px 0 0; color:var(--mist); font-size:14px; line-height:1.55; }
+        .flaps { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:52px; } .flap { min-height:122px; border:1px solid rgba(255,255,255,.09); border-radius:4px; padding:16px; background:#0b0f0d; } .flap span { color:#748078; font-family:var(--mono); font-size:11px; } .flap strong { display:block; margin-top:20px; color:var(--paper); font-family:var(--mono); font-size:30px; font-weight:400; font-variant-numeric:tabular-nums; } .flap strong.green { color:var(--green-light); }
+        .closing { margin:0 16px 16px; overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#111a14; } .closing-inner { position:relative; min-height:420px; display:grid; place-items:center; padding:72px 24px; text-align:center; } .closing-inner::before,.closing-inner::after { position:absolute; top:10%; bottom:10%; width:19%; border:1px solid rgba(160,216,173,.25); content:''; } .closing-inner::before { left:4%; border-right:0; border-radius:260px 0 0 260px; } .closing-inner::after { right:4%; border-left:0; border-radius:0 260px 260px 0; } .closing-copy { position:relative; z-index:1; max-width:620px; } .closing-copy h2 { font-family:Inter,system-ui,sans-serif; font-size:clamp(34px,4vw,46px); font-weight:600; letter-spacing:-.04em; } .closing-copy p { color:var(--mist); font-size:18px; line-height:1.6; } footer { padding:34px 0 52px; color:var(--mist); font-size:13px; } .footer-row { display:flex; justify-content:space-between; gap:20px; border-top:1px solid var(--line); padding-top:24px; } .system { color:var(--green-light); font-family:var(--mono); font-size:11px; }
+        @media (max-width:900px) { .nav { display:none; } .hero-grid { grid-template-columns:1fr; align-content:center; padding:120px 32px 170px; } .scene-wrap { position:absolute; inset:80px 0 0; height:auto; opacity:.35; } .hero-copy { position:relative; z-index:2; } .hero-console { right:24px; bottom:24px; } .plants-grid,.metric-console { grid-template-columns:1fr; } .chart { border-right:0; border-bottom:1px solid var(--line); } }
+        @media (max-width:620px) { .wrap { width:min(100% - 24px,1160px); } .topbar { height:64px; } .account-link { display:none; } .account .button { min-height:38px; padding:7px 11px; font-size:13px; } .hero,.chapter,.closing { margin:0 8px 8px; border-radius:12px; } .hero-grid { min-height:690px; padding:100px 24px 190px; } h1 { font-size:43px; } .lead { font-size:16px; } .button { width:100%; } .hero-console { right:12px; bottom:12px; left:12px; width:auto; } .console-cell { min-height:66px; padding:11px; } .console-value { font-size:14px; } .chapter-inner { width:calc(100% - 40px); padding:64px 0; } .rail::before { top:64px; } .chapter-copy { padding-left:26px; } .chapter-lead { font-size:16px; } .metric-console { min-height:0; } .flaps { grid-template-columns:repeat(2,minmax(0,1fr)); } .flap { min-height:100px; } .flap strong { margin-top:14px; font-size:24px; } .footer-row { flex-direction:column; } }
+        @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none!important; } }
     </style>
 </head>
-<body class="antialiased">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:rounded-lg focus:bg-[#4cc38a] focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#07100c]">
-        Перейти к содержимому
-    </a>
+<body>
+<div class="shell">
+    <header class="wrap topbar">
+        <a class="brand" href="{{ url('/') }}"><span class="mark">G</span>Умная теплица</a>
+        <nav class="nav" aria-label="Навигация"><a href="#signals">Показатели</a><a href="#cultures">Культуры</a><a href="#workflow">Как это работает</a><a href="#questions">Вопросы</a></nav>
+        <div class="account">@auth<a class="account-link" href="{{ route('dashboard') }}">Кабинет</a><a class="button button--main" href="{{ route('dashboard') }}">Открыть теплицы</a>@else@if(Route::has('login'))<a class="account-link" href="{{ route('login') }}">Войти</a>@endif@if(Route::has('register'))<a class="button button--main" href="{{ route('register') }}">Создать аккаунт</a></div>
+    </header>
 
-    <div class="page-shell min-h-screen overflow-x-hidden">
-        <header class="fixed inset-x-0 top-0 z-40 px-4 pt-4 sm:px-6">
-            <nav class="nav-surface mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-4 py-3 sm:px-5" aria-label="Основная навигация">
-                <a href="{{ url('/') }}" class="flex items-center gap-3 text-base font-semibold text-white">
-                    <span class="grid h-8 w-8 place-items-center rounded-lg bg-[#4cc38a] text-sm font-bold text-[#07100c]">G</span>
-                    Умная теплица
-                </a>
-
-                <div class="hidden items-center gap-6 text-sm text-[#a3a9b8] lg:flex">
-                    <a href="#signals" class="transition-colors duration-300 hover:text-white">Показатели</a>
-                    <a href="#features" class="transition-colors duration-300 hover:text-white">Возможности</a>
-                    <a href="#workflow" class="transition-colors duration-300 hover:text-white">Как это работает</a>
-                    <a href="#questions" class="transition-colors duration-300 hover:text-white">Вопросы</a>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    @auth
-                        <a href="{{ route('dashboard') }}" class="button-primary rounded-lg px-3 py-2 text-sm font-semibold">Открыть кабинет</a>
-                    @else
-                        @if (Route::has('login'))
-                            <a href="{{ route('login') }}" class="hidden text-sm text-[#c0c6d1] transition-colors duration-300 hover:text-white sm:block">Войти</a>
-                        @endif
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="button-primary rounded-lg px-3 py-2 text-sm font-semibold">Создать аккаунт</a>
-                        @endif
-                    @endauth
-                </div>
-            </nav>
-        </header>
-
-        <main id="main">
-            <section class="relative flex min-h-screen items-center overflow-hidden border-b section-line bg-[#07080d]">
-                <div id="greenhouse-scene" class="scene-container absolute inset-y-0 right-0 z-0 w-full lg:w-3/5" aria-label="Интерактивная трёхмерная модель умной теплицы"></div>
-                <div class="pointer-events-none absolute inset-0 z-[1] bg-[#07080d]/20"></div>
-
-                <div class="relative z-10 mx-auto w-full max-w-6xl px-6 pb-14 pt-32 sm:px-8 lg:px-10">
-                    <div class="max-w-2xl">
-                        <p class="mb-6 text-sm font-medium text-[#a3a9b8]">Контроль среды и ухода за растениями</p>
-                        <h1 class="hero-title max-w-[680px] text-5xl font-semibold leading-none text-white sm:text-6xl">
-                            Выращивайте растения<br>с точными данными
-                        </h1>
-                        <p class="hero-copy mt-8 max-w-xl text-lg leading-7 text-[#c0c6d1]">
-                            Создавайте теплицы, учитывайте культуры, фиксируйте рост и планируйте полив, подкормку и другие процедуры ухода.
-                        </p>
-
-                        <div class="mt-8 flex flex-wrap items-center gap-3">
-                            @auth
-                                <a href="{{ route('dashboard') }}" class="button-primary rounded-lg px-4 py-3 text-base font-semibold">Перейти к теплицам</a>
-                            @else
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="button-primary rounded-lg px-4 py-3 text-base font-semibold">Начать вести теплицу</a>
-                                @endif
-                            @endauth
-                            <a href="#signals" class="button-quiet rounded-lg px-4 py-3 text-base font-semibold">Посмотреть показатели</a>
-                        </div>
-                    </div>
-
-                    <div class="nav-surface mt-16 flex max-w-2xl items-center justify-between gap-6 rounded-2xl p-5 sm:p-6">
-                        <div>
-                            <p class="text-sm text-[#a3a9b8]">Интерактивная модель</p>
-                            <p class="mt-1 text-lg font-medium text-white">Потяните сцену, чтобы осмотреть теплицу</p>
-                        </div>
-                        <span class="hidden text-sm font-medium text-[#70d99c] sm:block">3D растения и датчик</span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="signals" class="border-b section-line bg-[#0b0e13] py-20 sm:py-24">
-                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
-                    <div class="grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
-                        <div>
-                            <p class="text-sm font-medium text-[#70d99c]">Показатели среды</p>
-                            <h2 class="mt-4 max-w-xl text-4xl font-semibold leading-tight text-white">Видите состояние теплицы в одном окне</h2>
-                            <p class="mt-5 max-w-lg text-base leading-7 text-[#a3a9b8]">В журнале измерений сохраняются температура, влажность и освещённость. По ним легче заметить отклонение и не пропустить уход.</p>
-                        </div>
-                        <div class="signal-card rounded-2xl p-5 sm:p-6">
-                            <div class="flex flex-wrap items-start justify-between gap-4">
-                                <div>
-                                    <p class="text-sm text-[#a3a9b8]">Температура за сегодня</p>
-                                    <p class="mt-2 text-4xl font-semibold tabular-nums text-white">24,6 °C</p>
-                                </div>
-                                <span class="rounded-full border border-[#4cc38a]/25 bg-[#4cc38a]/10 px-3 py-1 text-sm font-medium text-[#70d99c]">В норме</span>
-                            </div>
-                            <svg class="metric-grid mt-8 h-48 w-full" viewBox="0 0 620 220" role="img" aria-label="График температуры за день">
-                                <line x1="0" y1="30" x2="620" y2="30"></line>
-                                <line x1="0" y1="85" x2="620" y2="85"></line>
-                                <line x1="0" y1="140" x2="620" y2="140"></line>
-                                <line x1="0" y1="195" x2="620" y2="195"></line>
-                                <path class="metric-area" d="M0 166 C55 151 78 127 125 137 S191 84 248 103 S318 140 374 96 S465 44 526 73 S582 90 620 55 L620 220 L0 220 Z"></path>
-                                <path class="metric-line" d="M0 166 C55 151 78 127 125 137 S191 84 248 103 S318 140 374 96 S465 44 526 73 S582 90 620 55"></path>
-                                <circle cx="620" cy="55" r="5" fill="#70d99c"></circle>
-                            </svg>
-                            <div class="mt-3 flex justify-between text-xs text-[#707786]"><span>06:00</span><span>10:00</span><span>14:00</span><span>18:00</span><span>22:00</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="features" class="border-b section-line bg-[#07080d] py-20 sm:py-24">
-                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
-                    <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-                        <div id="plants-scene" class="scene-container h-[420px] w-full rounded-2xl sm:h-[520px]" aria-label="Трёхмерная модель выращиваемых культур"></div>
-                        <div>
-                            <p class="text-sm font-medium text-[#70d99c]">Культуры и уход</p>
-                            <h2 class="mt-4 text-4xl font-semibold leading-tight text-white">Ведите растения от посадки до сбора урожая</h2>
-                            <div class="mt-8 space-y-5">
-                                <article class="flex gap-4">
-                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">01</span>
-                                    <div><h3 class="text-lg font-medium text-white">Карточки культур</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Сохраняйте сорт, описание и особенности выращивания.</p></div>
-                                </article>
-                                <article class="flex gap-4">
-                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">02</span>
-                                    <div><h3 class="text-lg font-medium text-white">Этапы роста</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Отмечайте посадку, всходы, цветение и плодоношение.</p></div>
-                                </article>
-                                <article class="flex gap-4">
-                                    <span class="feature-icon grid h-10 w-10 shrink-0 place-items-center rounded-lg text-sm font-semibold">03</span>
-                                    <div><h3 class="text-lg font-medium text-white">План процедур</h3><p class="mt-1 text-sm leading-6 text-[#a3a9b8]">Создавайте задачи на полив, подкормку, пересадку и осмотр.</p></div>
-                                </article>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="border-b section-line bg-[#0b0e13] py-24 sm:py-32">
-                <div class="mx-auto max-w-4xl px-6 text-center sm:px-8">
-                    <p class="text-4xl font-semibold leading-tight text-[#717886] sm:text-5xl">
-                        Меньше записей в блокноте.<br><span class="text-white">Больше понятных действий для каждой культуры.</span>
-                    </p>
-                </div>
-            </section>
-
-            <section id="workflow" class="border-b section-line bg-[#07080d] py-20 sm:py-24">
-                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
-                    <p class="text-sm font-medium text-[#70d99c]">Как это работает</p>
-                    <h2 class="mt-4 max-w-2xl text-4xl font-semibold leading-tight text-white">Три шага для контроля выращивания</h2>
-                    <div class="mt-12 grid gap-5 md:grid-cols-3">
-                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 1</p><h3 class="mt-5 text-xl font-medium text-white">Добавьте теплицу и культуры</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Создайте пространство, грядки и карточки растений.</p></article>
-                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 2</p><h3 class="mt-5 text-xl font-medium text-white">Записывайте показатели</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Вносите измерения температуры и освещения в удобный журнал.</p></article>
-                        <article class="signal-card rounded-2xl p-6"><p class="text-sm text-[#70d99c]">Шаг 3</p><h3 class="mt-5 text-xl font-medium text-white">Выполняйте процедуры вовремя</h3><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Отмечайте завершённые задачи и следите за этапами развития.</p></article>
-                    </div>
-                </div>
-            </section>
-
-            <section id="questions" class="border-b section-line bg-[#0b0e13] py-20 sm:py-24">
-                <div class="mx-auto max-w-3xl px-6 sm:px-8">
-                    <p class="text-sm font-medium text-[#70d99c]">Вопросы</p>
-                    <h2 class="mt-4 text-4xl font-semibold leading-tight text-white">Частые вопросы</h2>
-                    <div class="mt-10 space-y-3">
-                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Можно ли вести несколько теплиц?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Да. Для каждой теплицы можно учитывать отдельные культуры, посадки, показатели и процедуры.</p></details>
-                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Какие данные можно фиксировать?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Температуру, освещённость и другие показатели, необходимые для наблюдения за условиями выращивания.</p></details>
-                        <details class="signal-card rounded-xl p-5"><summary class="cursor-pointer list-none pr-8 text-base font-medium text-white">Подходит ли система для учёбы?</summary><p class="mt-3 text-sm leading-6 text-[#a3a9b8]">Да. Проект работает локально и подходит для ведения учебного примера теплицы с несколькими культурами.</p></details>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-[#07080d] py-20 sm:py-24">
-                <div class="mx-auto max-w-6xl px-6 sm:px-8 lg:px-10">
-                    <div class="signal-card flex flex-col items-start justify-between gap-8 rounded-2xl p-8 sm:flex-row sm:items-center sm:p-10">
-                        <div><h2 class="text-3xl font-semibold text-white">Начните вести свою теплицу</h2><p class="mt-3 max-w-xl text-base leading-7 text-[#a3a9b8]">Создайте первую теплицу и добавьте выращиваемые культуры.</p></div>
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="button-primary shrink-0 rounded-lg px-4 py-3 text-base font-semibold">Открыть кабинет</a>
-                        @elseif (Route::has('register'))
-                            <a href="{{ route('register') }}" class="button-primary shrink-0 rounded-lg px-4 py-3 text-base font-semibold">Создать аккаунт</a>
-                        @endif
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer class="border-t section-line bg-[#07080d] py-8">
-            <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 text-sm text-[#707786] sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-                <p>© {{ date('Y') }} Умная теплица</p>
-                <p>Учебный проект для контроля выращивания растений</p>
+    <main>
+        <section class="hero">
+            <div class="hero-grid">
+                <div class="hero-copy"><p class="eyebrow">Контроль среды и ухода</p><h1>Растения растут лучше, когда видны условия</h1><p class="lead">Ведите культуры, фиксируйте температуру и освещённость, отмечайте этапы роста и планируйте процедуры ухода в одной системе.</p><div class="hero-actions">@auth<a class="button button--main" href="{{ route('dashboard') }}">Перейти к теплицам <span>→</span></a>@elseif(Route::has('register'))<a class="button button--main" href="{{ route('register') }}">Начать вести теплицу <span>→</span></a>@endauth<a class="button button--quiet" href="#signals">Посмотреть показатели</a></div></div>
+                <div class="scene-wrap"><div id="greenhouse-scene" aria-label="Интерактивная трёхмерная модель теплицы"></div></div>
             </div>
-        </footer>
-    </div>
+            <div class="hero-console" aria-label="Сводка состояния теплицы"><div class="console-top"><span class="console-dot"></span><span>Теплица № 1</span><span>Сводка за сегодня</span></div><div class="console-grid"><div class="console-cell"><div class="console-label">Температура</div><div class="console-value console-value--green">24,6 °C</div></div><div class="console-cell"><div class="console-label">Освещение</div><div class="console-value">7 240 лк</div></div><div class="console-cell"><div class="console-label">Статус</div><div class="console-value console-value--green">НОРМА</div></div></div></div>
+        </section>
+
+        <section id="signals" class="chapter chapter--pine"><div class="chapter-inner"><div class="rail"></div><div class="chapter-copy"><span class="tag">Показатели среды</span><h2>Наблюдайте за теплицей как за живой системой</h2><p class="chapter-lead">Журнал измерений хранит температуру и освещённость. Чёткая история помогает заметить отклонение и принять решение до того, как оно повлияет на растения.</p></div><div class="console"><div class="console-tabs"><span class="active">Температура</span><span>Освещённость</span><span>Журнал измерений</span><span>Состояние культур</span></div><div class="metric-console"><div class="chart"><div class="chart-head"><span>Средняя температура</span><strong>24,6 °C</strong></div><svg viewBox="0 0 620 180" preserveAspectRatio="none" aria-hidden="true"><path d="M0 139 C45 126 73 102 122 113 S182 65 236 84 S314 116 369 76 S456 33 518 58 S579 74 620 40 L620 180 L0 180Z"></path><path d="M0 139 C45 126 73 102 122 113 S182 65 236 84 S314 116 369 76 S456 33 518 58 S579 74 620 40"></path></svg></div><div class="tasks"><div class="task"><div><p>Температура воздуха</p><small>последнее измерение 10:30</small></div><span class="done">В НОРМЕ</span></div><div class="task"><div><p>Освещённость</p><small>последнее измерение 10:30</small></div><span class="done">В НОРМЕ</span></div><div class="task"><div><p>Полив томатов</p><small>следующая процедура 18:00</small></div><span class="done">ПЛАН</span></div></div></div></div></div></section>
+
+        <section id="cultures" class="chapter chapter--moss"><div class="chapter-inner"><div class="rail"></div><div class="chapter-copy"><span class="tag tag--warm">Культуры и уход</span><h2>От посева до сбора урожая — без потерянных записей</h2><p class="chapter-lead">Для каждой посадки сохраняются сорт, дата, количество и этап роста. Задачи на полив, подкормку и осмотр остаются рядом с культурой.</p></div><div class="plants-grid"><div id="plants-scene" aria-label="Трёхмерная модель овощных культур"></div><div class="feature-list"><article class="feature"><span class="feature-no">01</span><div><h3>Справочник культур</h3><p>Сохраняйте сорта и особенности выращивания, чтобы использовать их при каждой новой посадке.</p></div></article><article class="feature"><span class="feature-no">02</span><div><h3>Этапы развития</h3><p>Отмечайте всходы, рост, цветение, плодоношение и сбор урожая в хронологическом порядке.</p></div></article><article class="feature"><span class="feature-no">03</span><div><h3>План процедур</h3><p>Планируйте полив, подкормку, проветривание и обработку. Завершённые задачи остаются в истории.</p></div></article></div></div></div></section>
+
+        <section id="workflow" class="chapter chapter--soil"><div class="chapter-inner"><div class="rail"></div><div class="chapter-copy"><span class="tag">Рабочий ритм</span><h2>Три простых шага, чтобы ничего не упустить</h2><p class="chapter-lead">Система не требует сложного оборудования: начните с теплицы и культур, затем добавляйте измерения и процедуры по мере работы.</p></div><div class="flaps"><div class="flap"><span>ШАГ 01</span><strong>Создать</strong><span>теплицу и культуры</span></div><div class="flap"><span>ШАГ 02</span><strong class="green">Внести</strong><span>показатели среды</span></div><div class="flap"><span>ШАГ 03</span><strong>План</strong><span>процедур ухода</span></div><div class="flap"><span>СОСТОЯНИЕ</span><strong class="green">ГОТОВО</strong><span>к работе локально</span></div></div></div></section>
+
+        <section id="questions" class="closing"><div class="closing-inner"><div class="closing-copy"><p class="eyebrow" style="justify-content:center">Начало работы</p><h2>Ваша теплица готова к понятному учёту</h2><p>Создайте первую теплицу, добавьте культуры и начните вести наблюдения в своём темпе.</p>@auth<a class="button button--main" href="{{ route('dashboard') }}">Открыть кабинет <span>→</span></a>@elseif(Route::has('register'))<a class="button button--main" href="{{ route('register') }}">Создать аккаунт <span>→</span></a>@endif</div></div></section>
+    </main>
+    <footer class="wrap"><div class="footer-row"><span>© {{ date('Y') }} Умная теплица</span><span class="system">● СИСТЕМА ГОТОВА К РАБОТЕ</span></div></footer>
+</div>
 </body>
 </html>
+
+

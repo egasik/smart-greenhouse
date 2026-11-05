@@ -1,104 +1,47 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Мои теплицы
-        </h2>
+        <p class="gh-eyebrow">Рабочее пространство</p>
+        <h1 class="gh-title">Мои теплицы</h1>
+        <p class="gh-subtitle">Создавайте отдельные пространства для культур, показателей и процедур ухода.</p>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="gh-page-grid">
+        @if (session('success'))<div class="gh-alert">{{ session('success') }}</div>@endif
 
-            @if (session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
+        <div class="gh-grid gh-grid-3">
+            <article class="gh-panel gh-stat"><p class="gh-stat-label">Теплицы</p><p class="gh-stat-value">{{ $greenhouses->count() }}</p><p class="gh-stat-note">в рабочем пространстве</p></article>
+            <article class="gh-panel gh-stat"><p class="gh-stat-label">Посадки</p><p class="gh-stat-value">{{ $greenhouses->sum('plantings_count') }}</p><p class="gh-stat-note">во всех теплицах</p></article>
+            <article class="gh-panel gh-stat"><p class="gh-stat-label">Состояние системы</p><p class="gh-stat-value" style="font-size: 20px; margin-top: 25px;"><span class="gh-status"><span class="gh-status-dot"></span>Готова к работе</span></p><p class="gh-stat-note">данные ведутся вручную</p></article>
+        </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Добавить теплицу</h3>
-
-                <form method="POST" action="{{ route('greenhouses.store') }}" class="space-y-4">
+        <section class="gh-panel">
+            <div class="gh-panel-pad">
+                <div class="gh-panel-heading"><div><h2 class="gh-section-title">Новая теплица</h2><p class="gh-section-note">Добавьте название и место расположения</p></div></div>
+                <form method="POST" action="{{ route('greenhouses.store') }}" class="gh-form-grid">
                     @csrf
-
-                    <div>
-                        <label for="name" class="block font-medium text-sm text-gray-700">
-                            Название
-                        </label>
-                        <input id="name" name="name" type="text" value="{{ old('name') }}"
-                               class="mt-1 block w-full rounded-md border-gray-300"
-                               placeholder="Например: Теплица № 1" required>
-                        @error('name')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="location" class="block font-medium text-sm text-gray-700">
-                            Расположение
-                        </label>
-                        <input id="location" name="location" type="text" value="{{ old('location') }}"
-                               class="mt-1 block w-full rounded-md border-gray-300"
-                               placeholder="Участок у дома">
-                    </div>
-
-                    <div>
-                        <label for="note" class="block font-medium text-sm text-gray-700">
-                            Примечание
-                        </label>
-                        <textarea id="note" name="note" rows="3"
-                                  class="mt-1 block w-full rounded-md border-gray-300"
-                                  placeholder="Дополнительная информация">{{ old('note') }}</textarea>
-                    </div>
-
-                    <button type="submit"
-                            class="px-4 py-2 bg-green-700 text-white rounded-md hover:bg-green-800">
-                        Добавить
-                    </button>
+                    <label class="gh-field"><span class="gh-label">Название</span><input class="gh-input" id="name" name="name" value="{{ old('name') }}" placeholder="Например, Теплица у дома" required></label>
+                    <label class="gh-field"><span class="gh-label">Расположение</span><input class="gh-input" name="location" value="{{ old('location') }}" placeholder="Например, участок у дома"></label>
+                    <label class="gh-field gh-field--wide"><span class="gh-label">Примечание</span><textarea class="gh-textarea" name="note" placeholder="Краткая информация о теплице">{{ old('note') }}</textarea></label>
+                    @error('name')<p class="gh-error">{{ $message }}</p>@enderror
+                    <div class="gh-actions gh-field--wide"><button class="gh-button gh-button--primary" type="submit">Добавить теплицу</button></div>
                 </form>
             </div>
+        </section>
 
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <section>
+            <div class="gh-panel-heading"><div><h2 class="gh-section-title">Теплицы</h2><p class="gh-section-note">Откройте теплицу, чтобы вести посадки и уход</p></div></div>
+            <div class="gh-grid gh-grid-3">
                 @forelse ($greenhouses as $greenhouse)
-                    <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                        <h3 class="text-lg font-semibold text-gray-800">
-                            {{ $greenhouse->name }}
-                        </h3>
-
-                        <p class="text-sm text-gray-600 mt-2">
-                            Расположение: {{ $greenhouse->location ?: 'не указано' }}
-                        </p>
-
-                        <p class="text-sm text-gray-600 mt-1">
-                            Посадок: {{ $greenhouse->plantings_count }}
-                        </p>
-
-                        @if ($greenhouse->note)
-                            <p class="text-sm text-gray-600 mt-3">
-                                {{ $greenhouse->note }}
-                            </p>
-                        @endif
-
-                        <form method="POST"
-                              action="{{ route('greenhouses.destroy', $greenhouse) }}"
-                              class="mt-4">
-                            @csrf
-                            @method('DELETE')
-                        <a href="{{ route('greenhouses.show', $greenhouse) }}"
-                            class="inline-block mt-4 text-sm text-green-700 hover:text-green-900">
-                             Открыть теплицу
-                        </a>
-
-                            <button type="submit"
-                                    onclick="return confirm('Удалить теплицу и все связанные данные?')"
-                                    class="text-sm text-red-600 hover:text-red-800">
-                                Удалить
-                            </button>
-                        </form>
-                    </div>
+                    <article class="gh-panel gh-panel-pad">
+                        <div class="gh-panel-heading"><div><h3 class="gh-section-title">{{ $greenhouse->name }}</h3><p class="gh-section-note">{{ $greenhouse->location ?: 'Расположение не указано' }}</p></div><span class="gh-status"><span class="gh-status-dot"></span>Активна</span></div>
+                        <p class="gh-record-meta">Посадок: {{ $greenhouse->plantings_count }}</p>
+                        @if($greenhouse->note)<p class="gh-record-meta">{{ $greenhouse->note }}</p>@endif
+                        <div class="gh-actions mt-5"><a class="gh-button gh-button--primary" href="{{ route('greenhouses.show', $greenhouse) }}">Открыть</a><form method="POST" action="{{ route('greenhouses.destroy', $greenhouse) }}">@csrf @method('DELETE')<button class="gh-button gh-button--danger" type="submit" onclick="return confirm('Удалить теплицу и связанные данные?')">Удалить</button></form></div>
+                    </article>
                 @empty
-                    <p class="text-gray-600">Теплиц пока нет. Добавьте первую.</p>
+                    <div class="gh-empty" style="grid-column: 1 / -1;">Теплиц пока нет. Создайте первую выше.</div>
                 @endforelse
             </div>
-        </div>
+        </section>
     </div>
 </x-app-layout>

@@ -1,63 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Справочник культур
-        </h2>
+        <p class="gh-eyebrow">Справочник</p>
+        <h1 class="gh-title">Культуры</h1>
+        <p class="gh-subtitle">Сохраните названия, сорта и особенности растений для повторного использования в посадках.</p>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            @if (session('success'))
-                <div class="bg-green-100 text-green-700 px-4 py-3 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Добавить культуру</h3>
-
-                <form method="POST" action="{{ route('crops.store') }}" class="space-y-4">
-                    @csrf
-
-                    <input name="name" type="text" placeholder="Название культуры"
-                           value="{{ old('name') }}"
-                           class="w-full rounded-md border-gray-300" required>
-
-                    <input name="variety" type="text" placeholder="Сорт"
-                           value="{{ old('variety') }}"
-                           class="w-full rounded-md border-gray-300">
-
-                    <textarea name="description" rows="3" placeholder="Описание"
-                              class="w-full rounded-md border-gray-300">{{ old('description') }}</textarea>
-
-                    <button class="px-4 py-2 bg-green-700 text-white rounded-md">
-                        Добавить культуру
-                    </button>
+    <div class="gh-page-grid">
+        @if(session('success'))<div class="gh-alert">{{ session('success') }}</div>@endif
+        <div class="gh-grid gh-grid-2">
+            <section class="gh-panel"><div class="gh-panel-pad"><div class="gh-panel-heading"><div><h2 class="gh-section-title">Новая культура</h2><p class="gh-section-note">Заполните только известные данные</p></div></div>
+                <form method="POST" action="{{ route('crops.store') }}" class="gh-form-grid">@csrf
+                    <label class="gh-field"><span class="gh-label">Название</span><input class="gh-input" name="name" value="{{ old('name') }}" placeholder="Например, томат" required></label>
+                    <label class="gh-field"><span class="gh-label">Сорт</span><input class="gh-input" name="variety" value="{{ old('variety') }}" placeholder="Необязательно"></label>
+                    <label class="gh-field gh-field--wide"><span class="gh-label">Особенности выращивания</span><textarea class="gh-textarea" name="description" placeholder="Краткое описание условий и ухода">{{ old('description') }}</textarea></label>
+                    @error('name')<p class="gh-error">{{ $message }}</p>@enderror
+                    <div class="gh-actions gh-field--wide"><button class="gh-button gh-button--primary" type="submit">Добавить культуру</button></div>
                 </form>
-            </div>
-
-            <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Список культур</h3>
-
-                <div class="space-y-3">
-                    @forelse ($crops as $crop)
-                        <div class="border-b pb-3">
-                            <p class="font-medium">{{ $crop->name }}</p>
-                            <p class="text-sm text-gray-600">
-                                Сорт: {{ $crop->variety ?: 'не указан' }}
-                            </p>
-
-                            @if ($crop->description)
-                                <p class="text-sm text-gray-600 mt-1">
-                                    {{ $crop->description }}
-                                </p>
-                            @endif
-                        </div>
-                    @empty
-                        <p class="text-gray-600">Культуры пока не добавлены.</p>
-                    @endforelse
-                </div>
-            </div>
+            </div></section>
+            <section class="gh-panel"><div class="gh-panel-pad"><div class="gh-panel-heading"><div><h2 class="gh-section-title">Список культур</h2><p class="gh-section-note">{{ $crops->count() }} {{ $crops->count() === 1 ? 'запись' : 'записей' }}</p></div></div>
+                <div class="gh-card-list">@forelse($crops as $crop)<article class="gh-record"><div class="gh-record-main"><h3 class="gh-record-title">{{ $crop->name }}{{ $crop->variety ? ' — '.$crop->variety : '' }}</h3>@if($crop->description)<p class="gh-record-meta">{{ $crop->description }}</p>@else<p class="gh-record-meta">Описание не добавлено</p>@endif</div></article>@empty<div class="gh-empty">Справочник пока пуст.</div>@endforelse</div>
+            </div></section>
         </div>
     </div>
 </x-app-layout>

@@ -19,7 +19,7 @@ function setShadows(root) {
 
 function createStage(container) {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 100);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -66,14 +66,16 @@ function createStage(container) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.055;
     controls.enablePan = false;
-    controls.minDistance = 8.4;
-    controls.maxDistance = 14;
+    controls.minDistance = 9.2;
+    controls.maxDistance = 15.5;
     controls.minPolarAngle = Math.PI * 0.28;
     controls.maxPolarAngle = Math.PI * 0.47;
     controls.minAzimuthAngle = -1.05;
     controls.maxAzimuthAngle = 0.72;
-    controls.target.set(0, 0, 1.85);
-    camera.position.set(8.4, -9.5, 5.9);
+    // GLB exported from Blender uses Y as the vertical axis in Three.js.
+    // Target the actual centre of the greenhouse, rather than its front edge.
+    controls.target.set(0, 1.82, 0);
+    camera.position.set(8.9, 5.25, 10.9);
     controls.update();
 
     const resizeObserver = new ResizeObserver(() => {
