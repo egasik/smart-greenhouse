@@ -11,16 +11,13 @@ return new class extends Migration
         Schema::create('growth_stages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('planting_id')->constrained()->cascadeOnDelete();
-            $table->string('stage', 100);
-            $table->string('status', 50)->nullable();
+            $table->foreignId('growth_stage_definition_id')->constrained()->restrictOnDelete();
+            $table->enum('condition', ['good', 'attention', 'critical'])->nullable();
             $table->timestamp('recorded_at')->useCurrent();
             $table->text('comment')->nullable();
             $table->timestamps();
         });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('growth_stages');
-    }
+    public function down(): void { Schema::dropIfExists('growth_stages'); }
 };

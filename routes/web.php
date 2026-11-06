@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\AdminCatalogController;
 use App\Http\Controllers\CareTaskController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\GreenhouseController;
@@ -10,52 +10,27 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [GreenhouseController::class, 'index'])
-        ->name('dashboard');
-
-    Route::post('/greenhouses', [GreenhouseController::class, 'store'])
-        ->name('greenhouses.store');
-
-    Route::get('/greenhouses/{greenhouse}', [GreenhouseController::class, 'show'])
-        ->name('greenhouses.show');
-
-    Route::delete('/greenhouses/{greenhouse}', [GreenhouseController::class, 'destroy'])
-        ->name('greenhouses.destroy');
-
-    Route::get('/crops', [CropController::class, 'index'])
-        ->name('crops.index');
-
-    Route::post('/crops', [CropController::class, 'store'])
-        ->name('crops.store');
-
-    Route::post('/greenhouses/{greenhouse}/plantings', [PlantingController::class, 'store'])
-        ->name('plantings.store');
-
-    Route::delete('/plantings/{planting}', [PlantingController::class, 'destroy'])
-        ->name('plantings.destroy');
-
-    Route::post('/plantings/{planting}/growth-stages', [GrowthStageController::class, 'store'])
-        ->name('growth-stages.store');
-
-    Route::post('/greenhouses/{greenhouse}/measurements', [MeasurementController::class, 'store'])
-        ->name('measurements.store');
-
-    Route::post('/greenhouses/{greenhouse}/care-tasks', [CareTaskController::class, 'store'])
-        ->name('care-tasks.store');
-
-    Route::patch('/care-tasks/{careTask}/complete', [CareTaskController::class, 'complete'])
-        ->name('care-tasks.complete');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [GreenhouseController::class, 'index'])->name('dashboard');
+    Route::post('/greenhouses', [GreenhouseController::class, 'store'])->name('greenhouses.store');
+    Route::get('/greenhouses/{greenhouse}', [GreenhouseController::class, 'show'])->name('greenhouses.show');
+    Route::delete('/greenhouses/{greenhouse}', [GreenhouseController::class, 'destroy'])->name('greenhouses.destroy');
+    Route::get('/crops', [CropController::class, 'index'])->name('crops.index');
+    Route::post('/catalog-requests', [CropController::class, 'requestStore'])->name('catalog-requests.store');
+    Route::post('/greenhouses/{greenhouse}/plantings', [PlantingController::class, 'store'])->name('plantings.store');
+    Route::delete('/plantings/{planting}', [PlantingController::class, 'destroy'])->name('plantings.destroy');
+    Route::post('/plantings/{planting}/growth-stages', [GrowthStageController::class, 'store'])->name('growth-stages.store');
+    Route::post('/greenhouses/{greenhouse}/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
+    Route::post('/greenhouses/{greenhouse}/care-tasks', [CareTaskController::class, 'store'])->name('care-tasks.store');
+    Route::patch('/care-tasks/{careTask}/complete', [CareTaskController::class, 'complete'])->name('care-tasks.complete');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::prefix('admin')->as('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/catalog', [AdminCatalogController::class, 'index'])->name('catalog.index');
+    Route::post('/catalog', [AdminCatalogController::class, 'store'])->name('catalog.store');
+    Route::patch('/catalog-requests/{catalogRequest}/approve', [AdminCatalogController::class, 'approve'])->name('catalog-requests.approve');
+    Route::patch('/catalog-requests/{catalogRequest}/reject', [AdminCatalogController::class, 'reject'])->name('catalog-requests.reject');
+});
 require __DIR__.'/auth.php';

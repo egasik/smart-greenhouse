@@ -1,25 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-        <p class="gh-eyebrow">Справочник</p>
-        <h1 class="gh-title">Культуры</h1>
-        <p class="gh-subtitle">Сохраните названия, сорта и особенности растений для повторного использования в посадках.</p>
-    </x-slot>
-
-    <div class="gh-page-grid">
-        @if(session('success'))<div class="gh-alert">{{ session('success') }}</div>@endif
-        <div class="gh-grid gh-grid-2">
-            <section class="gh-panel"><div class="gh-panel-pad"><div class="gh-panel-heading"><div><h2 class="gh-section-title">Новая культура</h2><p class="gh-section-note">Заполните только известные данные</p></div></div>
-                <form method="POST" action="{{ route('crops.store') }}" class="gh-form-grid">@csrf
-                    <label class="gh-field"><span class="gh-label">Название</span><input class="gh-input" name="name" value="{{ old('name') }}" placeholder="Например, томат" required></label>
-                    <label class="gh-field"><span class="gh-label">Сорт</span><input class="gh-input" name="variety" value="{{ old('variety') }}" placeholder="Необязательно"></label>
-                    <label class="gh-field gh-field--wide"><span class="gh-label">Особенности выращивания</span><textarea class="gh-textarea" name="description" placeholder="Краткое описание условий и ухода">{{ old('description') }}</textarea></label>
-                    @error('name')<p class="gh-error">{{ $message }}</p>@enderror
-                    <div class="gh-actions gh-field--wide"><button class="gh-button gh-button--primary" type="submit">Добавить культуру</button></div>
-                </form>
-            </div></section>
-            <section class="gh-panel"><div class="gh-panel-pad"><div class="gh-panel-heading"><div><h2 class="gh-section-title">Список культур</h2><p class="gh-section-note">{{ $crops->count() }} {{ $crops->count() === 1 ? 'запись' : 'записей' }}</p></div></div>
-                <div class="gh-card-list">@forelse($crops as $crop)<article class="gh-record"><div class="gh-record-main"><h3 class="gh-record-title">{{ $crop->name }}{{ $crop->variety ? ' — '.$crop->variety : '' }}</h3>@if($crop->description)<p class="gh-record-meta">{{ $crop->description }}</p>@else<p class="gh-record-meta">Описание не добавлено</p>@endif</div></article>@empty<div class="gh-empty">Справочник пока пуст.</div>@endforelse</div>
-            </div></section>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800">Справочник растений</h2></x-slot>
+    <div class="py-12"><div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        @if(session('success'))<div class="rounded bg-green-100 p-4 text-green-800">{{ session('success') }}</div>@endif
+        @error('catalog')<div class="rounded bg-red-100 p-4 text-red-800">{{ $message }}</div>@enderror
+        <div class="grid gap-6 lg:grid-cols-2">
+            <section class="bg-white shadow-sm rounded-lg p-6"><h3 class="text-lg font-semibold">Доступные культуры и сорта</h3><p class="mt-1 text-sm text-gray-600">В посадке можно выбрать только проверенные администратором записи.</p><div class="mt-5 space-y-4">@forelse($crops as $crop)<article class="border rounded p-4"><h4 class="font-semibold">{{ $crop->name }}</h4><ul class="mt-2 space-y-2 text-sm text-gray-600">@foreach($crop->varieties as $variety)<li><span class="font-medium text-gray-800">{{ $variety->name }}</span> — {{ $variety->growthStages->pluck('name')->join(', ') }}</li>@endforeach</ul></article>@empty<p class="text-gray-600">Справочник пока пуст.</p>@endforelse</div></section>
+            <section class="bg-white shadow-sm rounded-lg p-6"><h3 class="text-lg font-semibold">Предложить культуру или сорт</h3><p class="mt-1 text-sm text-gray-600">После проверки администратора запись станет доступна всем пользователям.</p><form class="mt-5 space-y-4" method="POST" action="{{ route('catalog-requests.store') }}">@csrf
+                <div><label class="block text-sm font-medium">Существующая культура</label><select class="mt-1 w-full rounded border-gray-300" name="crop_id"><option value="">Новой культуры нет в списке</option>@foreach($crops as $crop)<option value="{{ $crop->id }}" @selected(old('crop_id') == $crop->id)>{{ $crop->name }}</option>@endforeach</select></div>
+                <div><label class="block text-sm font-medium">Название новой культуры</label><input class="mt-1 w-full rounded border-gray-300" name="crop_name" value="{{ old('crop_name') }}" placeholder="Заполняется, если культуры нет в списке"><p class="mt-1 text-xs text-gray-500">Заполните либо существующую культуру, либо это поле.</p>@error('crop_name')<p class="text-sm text-red-600">{{ $message }}</p>@enderror</div>
+                <div><label class="block text-sm font-medium">Сорт</label><input required class="mt-1 w-full rounded border-gray-300" name="variety_name" value="{{ old('variety_name') }}" placeholder="Например, Де Барао"><p class="mt-1 text-xs text-gray-500">Если предлагаете только новую культуру, укажите её первый сорт.</p></div>
+                <fieldset><legend class="text-sm font-medium">Допустимые этапы роста</legend><div class="mt-2 grid grid-cols-2 gap-2">@foreach($stages as $stage)<label class="flex items-center gap-2 text-sm"><input type="checkbox" name="stage_ids[]" value="{{ $stage->id }}" @checked(in_array($stage->id, old('stage_ids', [])))>{{ $stage->name }}</label>@endforeach</div>@error('stage_ids')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror</fieldset>
+                <button class="rounded bg-green-700 px-4 py-2 text-white hover:bg-green-800">Отправить на проверку</button>
+            </form></section>
         </div>
-    </div>
+    </div></div>
 </x-app-layout>

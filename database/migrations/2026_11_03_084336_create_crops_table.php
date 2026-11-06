@@ -10,15 +10,11 @@ return new class extends Migration
     {
         Schema::create('crops', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('variety', 100)->nullable();
+            $table->string('name', 100)->unique();
             $table->text('description')->nullable();
             $table->timestamps();
         });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('crops');
-    }
+    public function down(): void { Schema::dropIfExists('crops'); }
 };

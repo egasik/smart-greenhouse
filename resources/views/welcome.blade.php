@@ -25,7 +25,24 @@
     <header class="wrap topbar">
         <a class="brand" href="{{ url('/') }}"><span class="mark">G</span>Умная теплица</a>
         <nav class="nav" aria-label="Навигация"><a href="#signals">Показатели</a><a href="#cultures">Культуры</a><a href="#workflow">Как это работает</a><a href="#questions">Вопросы</a></nav>
-        <div class="account">@auth<a class="account-link" href="{{ route('dashboard') }}">Кабинет</a><a class="button button--main" href="{{ route('dashboard') }}">Открыть теплицы</a>@else@if(Route::has('login'))<a class="account-link" href="{{ route('login') }}">Войти</a>@endif@if(Route::has('register'))<a class="button button--main" href="{{ route('register') }}">Создать аккаунт</a></div>
+        <div class="account">
+    @auth
+        <a class="account-link" href="{{ route('dashboard') }}">Кабинет</a>
+        <a class="button button--main" href="{{ route('dashboard') }}">
+            Открыть теплицы
+        </a>
+    @else
+        @if (Route::has('login'))
+            <a class="account-link" href="{{ route('login') }}">Войти</a>
+        @endif
+
+        @if (Route::has('register'))
+            <a class="button button--main" href="{{ route('register') }}">
+                Создать аккаунт
+            </a>
+        @endif
+    @endauth
+</div>
     </header>
 
     <main>

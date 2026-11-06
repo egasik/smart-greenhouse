@@ -9,12 +9,7 @@ class Greenhouse extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'name',
-        'location',
-        'note',
-    ];
+    protected $fillable = ['user_id', 'name', 'location', 'note'];
 
     public function user()
     {

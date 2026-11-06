@@ -9,14 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user')->after('password');
+            $table->enum('role', ['admin', 'user'])->default('user')->after('password');
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
-        });
+        Schema::table('users', fn (Blueprint $table) => $table->dropColumn('role'));
     }
 };

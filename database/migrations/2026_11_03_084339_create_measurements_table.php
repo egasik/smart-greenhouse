@@ -12,15 +12,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('greenhouse_id')->constrained()->cascadeOnDelete();
             $table->foreignId('planting_id')->nullable()->constrained()->nullOnDelete();
-            $table->decimal('temperature', 5, 2)->nullable();
-            $table->decimal('illumination', 10, 2)->nullable();
+            $table->double('temperature')->nullable();
+            $table->double('illumination')->nullable();
             $table->timestamp('measured_at')->useCurrent();
             $table->timestamps();
         });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('measurements');
-    }
+    public function down(): void { Schema::dropIfExists('measurements'); }
 };
