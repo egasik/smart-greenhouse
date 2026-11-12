@@ -1,0 +1,10 @@
+@layer components {
+    .gh-app .bg-white, .gh-auth .bg-white { background-color:var(--gh-surface) !important; }
+    .gh-app .bg-gray-100, .gh-app .bg-gray-50, .gh-auth .bg-gray-100, .gh-auth .bg-gray-50 { background-color:var(--gh-surface-raised) !important; }
+    .gh-app .text-gray-900, .gh-app .text-gray-800, .gh-auth .text-gray-900, .gh-auth .text-gray-800 { color:var(--gh-text) !important; }
+    .gh-app .text-gray-700, .gh-app .text-gray-600, .gh-app .text-gray-500, .gh-auth .text-gray-700, .gh-auth .text-gray-600, .gh-auth .text-gray-500 { color:var(--gh-muted) !important; }
+    .gh-app .border-gray-100, .gh-app .border-gray-200, .gh-app .border-gray-300, .gh-auth .border-gray-100, .gh-auth .border-gray-200, .gh-auth .border-gray-300 { border-color:var(--gh-line) !important; }
+    .gh-app .text-red-600, .gh-auth .text-red-600 { color:var(--gh-danger) !important; }
+    .gh-app .bg-red-100, .gh-auth .bg-red-100 { background-color:var(--gh-danger-soft) !important; }
+    .gh-app .shadow, .gh-app .shadow-sm, .gh-auth .shadow, .gh-auth .shadow-sm { box-shadow:none !important; }
+}

@@ -1,0 +1,6 @@
+@import './greenhouse-theme.css';
+@import './breeze-theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
