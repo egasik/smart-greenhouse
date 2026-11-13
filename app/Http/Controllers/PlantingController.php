@@ -22,7 +22,7 @@ class PlantingController extends Controller
     public function update(Request $request, Planting $planting)
     {
         abort_unless($planting->greenhouse->user_id === $request->user()->id, 403);
-        $data = $request->validate(['variety_id' => ['required','exists:varieties,id'], 'planting_date' => ['required','date'], 'quantity' => ['required','integer','min:1'], 'status' => ['required', Rule::in(['active','completed','cancelled'])]]);
+        $data = $request->validate(['variety_id' => ['required','exists:varieties,id'], 'planting_date' => ['required','date'], 'quantity' => ['required','integer','min:1'], 'status' => ['required', Rule::in(Planting::STATUSES)]]);
         $planting->update($data);
         return back()->with('success', 'Посадка обновлена.');
     }

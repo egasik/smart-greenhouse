@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->date('planting_date');
             $table->unsignedInteger('quantity')->default(1);
-            $table->enum('status', ['active', 'completed', 'archived'])
+            $table->enum('status', ['active', 'completed', 'cancelled'])
                 ->default('active');
             $table->timestamps();
 

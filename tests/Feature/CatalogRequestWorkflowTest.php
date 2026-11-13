@@ -99,4 +99,65 @@ class CatalogRequestWorkflowTest extends TestCase
             'status' => 'pending',
         ]);
     }
+
+    public function test_regular_user_cannot_open_admin_catalog(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('admin.catalog.index'))
+            ->assertForbidden();
+    }
+
+    public function test_admin_can_reject_request_with_comment(): void
+    {
+        $requester = User::factory()->create();
+        $admin = User::factory()->create(['role' => 'admin']);
+        $catalogRequest = CatalogRequest::create([
+            'requested_by' => $requester->id,
+            'crop_name' => 'Редис',
+            'variety_name' => 'Жара',
+        ]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.catalog-requests.reject', $catalogRequest), [
+                'review_comment' => 'Требуется уточнение названия.',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('catalog_requests', [
+            'id' => $catalogRequest->id,
+            'status' => 'rejected',
+            'reviewed_by' => $admin->id,
+            'review_comment' => 'Требуется уточнение названия.',
+        ]);
+    }
+
+    public function test_admin_can_add_catalog_entry_and_assign_fixed_stages(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        $seed = GrowthStageDefinition::create([
+            'code' => 'seed',
+            'name' => 'Посев',
+            'sort_order' => 1,
+        ]);
+        $harvest = GrowthStageDefinition::create([
+            'code' => 'harvest',
+            'name' => 'Сбор урожая',
+            'sort_order' => 8,
+        ]);
+
+        $this->actingAs($admin)->post(route('admin.catalog.store'), [
+            'crop_name' => 'Перец',
+            'variety_name' => 'Калифорнийское чудо',
+            'description' => 'Овощная культура',
+            'stage_ids' => [$seed->id, $harvest->id],
+        ])->assertRedirect();
+
+        $variety = Variety::where('name', 'Калифорнийское чудо')->firstOrFail();
+
+        $this->assertSame('Перец', $variety->crop->name);
+        $this->assertEqualsCanonicalizing(
+            [$seed->id, $harvest->id],
+            $variety->growthStages()->pluck('growth_stage_definitions.id')->all(),
+        );
+    }
 }
