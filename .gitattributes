@@ -4,6 +4,7 @@
 *.css diff=css
 *.html diff=html
 *.md diff=markdown
+*.glb filter=lfs diff=lfs merge=lfs -text
 *.php diff=php
 
 /.github export-ignore

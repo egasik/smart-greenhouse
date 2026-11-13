@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
-import { createGreenhouseScene, createPlantsScene } from './greenhouse-scene';
+import { createPlantsScene } from './greenhouse-scene';
+import { createGreenhouseModelScene } from './greenhouse-model-scene';
 
 const themeStorageKey = 'greenhouse-theme';
 
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const greenhouseContainer = document.querySelector('#greenhouse-scene');
     const plantsContainer = document.querySelector('#plants-scene');
 
-    if (greenhouseContainer) createGreenhouseScene(greenhouseContainer);
+    if (greenhouseContainer) createGreenhouseModelScene(greenhouseContainer);
     if (plantsContainer) createPlantsScene(plantsContainer);
 });
 
