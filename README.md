@@ -1,58 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Умная теплица
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Веб приложение для учёта теплиц, культур, сортов, стадий роста, показателей температуры и освещённости, полива и других процедур ухода.
 
-## About Laravel
+## Возможности
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- регистрация и вход пользователей;
+- роли пользователя и администратора;
+- создание теплиц и посадок;
+- фиксация стадий роста из утверждённого справочника;
+- журнал температуры и освещённости;
+- планирование и выполнение процедур ухода;
+- заявки на новые культуры и сорта;
+- административная проверка заявок и назначение стадий роста;
+- поиск по теплицам, культурам и сортам;
+- публичное версионированное JSON API.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Стек
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+PHP 8.3+, Laravel 13, Blade, MySQL, Vite, Tailwind CSS, Alpine.js и Three.js.
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Установка
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/egasik/smart-greenhouse.git
+cd smart-greenhouse
+composer install
+copy .env.example .env
+php artisan key:generate
+npm install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+В Linux и macOS вместо `copy` используйте `cp`.
 
-## Contributing
+Создайте базу MySQL и заполните `.env`:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=smart_greenhouse
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+Подготовьте структуру и справочники:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan migrate --seed
+npm run build
+php artisan serve
+```
 
-## Security Vulnerabilities
+Для разработки интерфейса запустите `npm run dev` в отдельном терминале.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Тестовые пользователи
 
-## License
+Учётные записи создаёт `DemoUsersSeeder`. Актуальные адреса и пароли указаны в самом сидере. Перед публикацией проекта замените демонстрационные пароли.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Основные модули
+
+```text
+app/
+├── Http/
+│   ├── Controllers/
+│   │   └── Api/V1/
+│   ├── Middleware/
+│   └── Resources/Api/V1/
+├── Models/
+database/
+├── migrations/
+└── seeders/
+resources/
+├── css/
+├── js/
+└── views/
+routes/
+├── api.php
+├── auth.php
+└── web.php
+tests/
+├── Feature/
+└── Unit/
+```
+
+## API
+
+API доступно по адресу `/api/v1`. Описание методов находится в [docs/api.md](docs/api.md), проверочная браузерная страница — `/api-test.html`.
+
+## База данных
+
+Структура создаётся миграциями. ER схема и пояснение находятся в [docs/database.md](docs/database.md). Фиксированные наборы статусов хранятся как `ENUM`, числовые показатели температуры и освещённости — как `DOUBLE`.
+
+## Проверка
+
+```bash
+php artisan test
+npm run build
+```
+
+Перед сдачей также проверьте формы и навигацию при ширине экрана 390 пикселей.

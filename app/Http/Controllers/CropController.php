@@ -8,14 +8,26 @@ class CropController extends Controller
 {
     public function index(Request $request)
     {
-        $crops = Crop::with(['varieties.growthStages'])->orderBy('name')->get();
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+        ]);
+        $crops = Crop::query()
+            ->with(['varieties.growthStages'])
+            ->when($filters['search'] ?? null, function ($query, string $search): void {
+                $query->where(function ($nested) use ($search): void {
+                    $nested->where('name', 'like', "%{$search}%")
+                        ->orWhereHas('varieties', fn ($varieties) => $varieties->where('name', 'like', "%{$search}%"));
+                });
+            })
+            ->orderBy('name')
+            ->get();
         $myRequests = CatalogRequest::query()
             ->with(['crop', 'reviewer'])
             ->where('requested_by', $request->user()->id)
             ->latest()
             ->get();
 
-        return view('crops.index', compact('crops', 'myRequests'));
+        return view('crops.index', compact('crops', 'myRequests', 'filters'));
     }
 
     public function requestStore(Request $request)

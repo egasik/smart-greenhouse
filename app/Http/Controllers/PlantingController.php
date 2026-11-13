@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\Models\Greenhouse;
 use App\Models\Planting;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 class PlantingController extends Controller
 {
     public function store(Request $request, Greenhouse $greenhouse)
@@ -17,5 +18,12 @@ class PlantingController extends Controller
         abort_unless($planting->greenhouse->user_id === $request->user()->id, 403);
         $greenhouse = $planting->greenhouse; $planting->delete();
         return redirect()->route('greenhouses.show', $greenhouse)->with('success', 'Посадка удалена.');
+    }
+    public function update(Request $request, Planting $planting)
+    {
+        abort_unless($planting->greenhouse->user_id === $request->user()->id, 403);
+        $data = $request->validate(['variety_id' => ['required','exists:varieties,id'], 'planting_date' => ['required','date'], 'quantity' => ['required','integer','min:1'], 'status' => ['required', Rule::in(['active','completed','cancelled'])]]);
+        $planting->update($data);
+        return back()->with('success', 'Посадка обновлена.');
     }
 }

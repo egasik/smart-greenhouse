@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Проверка API — Умная теплица</title><style>body{font:16px/1.5 system-ui;max-width:960px;margin:40px auto;padding:0 20px;background:#f5f7f4;color:#172019}button{padding:10px 14px;border:0;border-radius:8px;background:#287a4b;color:white}pre{padding:20px;background:#111712;color:#dce9df;border-radius:12px;overflow:auto}</style></head>
+<body><h1>Проверка публичного API</h1><p>Кнопка выполняет GET-запрос к справочнику культур.</p><button id="load">Получить данные</button><pre id="result">Ответ появится здесь</pre><script>document.querySelector('#load').addEventListener('click',async()=>{const output=document.querySelector('#result');output.textContent='Загрузка…';try{const response=await fetch('/api/v1/crops',{headers:{Accept:'application/json'}});const data=await response.json();output.textContent=JSON.stringify(data,null,2)}catch(error){output.textContent='Не удалось получить данные: '+error.message}})</script></body>
+</html>

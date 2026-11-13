@@ -2,6 +2,10 @@
 
 return [
 
+    'greenhouse_api' => [
+        'key' => env('GREENHOUSE_API_KEY'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

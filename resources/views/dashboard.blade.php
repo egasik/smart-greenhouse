@@ -30,6 +30,11 @@
 
         <section>
             <div class="gh-panel-heading"><div><h2 class="gh-section-title">Теплицы</h2><p class="gh-section-note">Откройте теплицу, чтобы вести посадки и уход</p></div></div>
+            <form method="GET" action="{{ route('dashboard') }}" class="gh-actions mb-5" role="search">
+                <label class="gh-field" style="flex: 1"><span class="gh-label">Поиск</span><input class="gh-input" type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Название или расположение"></label>
+                <button class="gh-button gh-button--primary" type="submit">Найти</button>
+                @if(!empty($filters['search']))<a class="gh-button" href="{{ route('dashboard') }}">Сбросить</a>@endif
+            </form>
             <div class="gh-grid gh-grid-3">
                 @forelse ($greenhouses as $greenhouse)
                     <article class="gh-panel gh-panel-pad">

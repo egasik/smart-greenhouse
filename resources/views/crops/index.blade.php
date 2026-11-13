@@ -23,6 +23,12 @@
                     </div>
                 </div>
 
+                <form method="GET" action="{{ route('crops.index') }}" class="gh-actions mb-5" role="search">
+                    <label class="gh-field" style="flex: 1"><span class="gh-label">Поиск</span><input class="gh-input" type="search" name="search" value="{{ $filters['search'] ?? '' }}" placeholder="Культура или сорт"></label>
+                    <button class="gh-button gh-button--primary" type="submit">Найти</button>
+                    @if(!empty($filters['search']))<a class="gh-button" href="{{ route('crops.index') }}">Сбросить</a>@endif
+                </form>
+
                 <div class="gh-card-list">
                     @forelse ($crops as $crop)
                         <article class="gh-record">
